@@ -12,8 +12,8 @@ CREATE TABLE compañero(
 
 
 CREATE TABLE carrera(
-    nombre VARCHAR(25),
     DNI VARCHAR(25),
+    nombre VARCHAR(25),
     RFC VARCHAR(40),
     entrada DATE,
     salida DATE,
@@ -42,11 +42,11 @@ CREATE TABLE cena(
 
 
 ALTER TABLE compañero ADD CONSTRAINT compañero_PK PRIMARY KEY (DNI);
-ALTER TABLE carrera ADD CONSTRAINT carrera_PK PRIMARY KEY (DNI,RFC,entrada);
+ALTER TABLE carrera ADD CONSTRAINT carrera_PK PRIMARY KEY (RFC,entrada);
 ALTER TABLE empresa ADD CONSTRAINT empresa_PK PRIMARY KEY (RFC);
 ALTER TABLE asistencia ADD CONSTRAINT asistencia_PK PRIMARY KEY (nombre,año);
 ALTER TABLE cena ADD CONSTRAINT cena_PK PRIMARY KEY (año);
-
+ALTER TABLE carrera ADD CONSTRAINT carrera_FK FOREIGN KEY (DNI) REFERENCES compañero(DNI) ON DELETE SET NULL;
 
 
 INSERT INTO compañero(DNI,nombre,telefono) VALUES 
@@ -59,10 +59,11 @@ INSERT INTO compañero(DNI,nombre) VALUES
 ("5","Aitor Mendibil");
 
 INSERT INTO carrera(nombre,DNI,RFC,entrada,cargo) VALUES
-("Ixone Arrieta",5,"E1",'1992-01-02',"obrero"),
-("Aitor Mendibil",3,"E2",'1992-01-03',"obrero"),
-("Aitor Mendibil",3,"E2",'1998-12-21',"gerente"); 
+("Ixone Arrieta","3","E1",'1992-01-02',"obrero"),
+("Aitor Mendibil","5","E2",'1992-01-03',"obrero"),
+("Aitor Mendibil","5","E2",'1998-12-21',"gerente"); 
 UPDATE carrera SET salida = '1998-12-20' WHERE nombre="Aitor Mendibil" AND entrada= '1992-01-03'; 
+
 
 INSERT INTO empresa(RFC,nombre,telefono) VALUES 
 ("E1","Ulma Handling",10),
@@ -94,9 +95,9 @@ UPDATE empresa set nombre="Ederlan S.Coop" WHERE nombre="Ederlan";
 DELETE FROM empresa WHERE RFC="E3";
 UPDATE carrera set cargo="trabajador" WHERE cargo="obrero";
 
--- DELETE FROM compañero WHERE nombre="Aitor Mendibil";
--- DELETE FROM asistencia WHERE nombre="Aitor Mendibil";
--- DELETE FROM cena WHERE organizador1="Aitor Mendibil" OR organizador2="Aitor Mendibil";
 -- DELETE FROM carrera WHERE nombre="Aitor Mendibil";
+DELETE FROM asistencia WHERE nombre="Aitor Mendibil";
+DELETE FROM compañero WHERE nombre="Aitor Mendibil";
+DELETE FROM cena WHERE organizador1="Aitor Mendibil" OR organizador2="Aitor Mendibil";
 
 
