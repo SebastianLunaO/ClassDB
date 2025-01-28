@@ -12,7 +12,7 @@ CREATE TABLE proveedores(
 CREATE TABLE Facturas(
     numFact SMALLINT,
     fecha DATE,
-    IVA int,
+    IVA DECIMAL(8,2),
     provID VARCHAR(100)
 );
 
