@@ -67,22 +67,25 @@ WHERE c.nombre='Loreak');
 
 -- 9
 WITH grouped_year AS (
-SELECT  
-ct.nombre AS ct_Nom,
-SUM(l.cantidad*l.precio) AS suma, 
-YEAR(p.fecha) AS año
-FROM articulos a
-JOIN lineas l ON l.articuloID = a.articuloID
-JOIN pedidos p ON p.pedidoID = l.pedidoID
-JOIN categorias ct ON ct.categoriaID = a.categoriaID
-GROUP BY ct.categoriaID,YEAR(p.fecha))
+    SELECT  
+    ct.nombre AS ct_Nom,
+    SUM(l.cantidad*l.precio) AS suma, 
+    YEAR(p.fecha) AS año
+    FROM articulos a
+    JOIN lineas l ON l.articuloID = a.articuloID
+    JOIN pedidos p ON p.pedidoID = l.pedidoID
+    JOIN categorias ct ON ct.categoriaID = a.categoriaID
+    GROUP BY ct.categoriaID,YEAR(p.fecha)
+)
 
 SELECT ct_Nom,suma,año
 FROM grouped_year
-WHERE suma > (
+WHERE suma > 
+(
 SELECT suma
 FROM grouped_year
-WHERE suma = (SELECT MAX(suma) FROM grouped_year WHERE año='1986'))
+WHERE suma = (SELECT MAX(suma) FROM grouped_year WHERE año='1986')
+)
 ;
 
 

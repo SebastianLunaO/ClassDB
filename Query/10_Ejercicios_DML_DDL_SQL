@@ -1,0 +1,58 @@
+-- -- 1
+-- WITH grouped_year AS (
+-- SELECT  
+--     EXTRACT(YEAR_MONTH FROM p.fecha) AS fecha,
+--     SUM(l.cantidad*l.precio) AS suma
+--     FROM articulos a
+--     JOIN lineas l ON l.articuloID = a.articuloID
+--     JOIN pedidos p ON p.pedidoID = l.pedidoID
+--     JOIN categorias ct ON ct.categoriaID = a.categoriaID
+--     GROUP BY fecha
+--     HAVING YEAR(fecha) = 1986
+--     ORDER BY fecha ASC)
+
+-- SELECT CONCAT(SUBSTRING(fecha,1,4),"-",SUBSTRING(fecha,5,6)) AS fecha_mensual, SUM(suma)
+-- FROM grouped_year
+-- GROUP BY fecha;
+
+-- -- 2
+-- SELECT  
+--     p.fecha AS fecha,
+--     SUM(l.cantidad*l.precio) AS suma
+--     FROM articulos a
+--     JOIN lineas l ON l.articuloID = a.articuloID
+--     JOIN pedidos p ON p.pedidoID = l.pedidoID
+--     JOIN categorias ct ON ct.categoriaID = a.categoriaID
+--     GROUP BY fecha
+--     HAVING YEAR(fecha) = 1987
+--     ORDER BY suma DESC 
+--     LIMIT 3;
+
+-- -- 3
+-- SELECT articuloID,descripcion,((stock_medio - stock)) cantidad_pedir
+-- FROM articulos
+-- WHERE stock < stock_min;
+
+-- -- 4
+-- SELECT a.articuloID,l.pedidoID,p.fecha, l.precio, a.precio*0.8, a.precio
+-- FROM articulos a
+-- JOIN lineas l ON l.articuloID = a.articuloID
+-- JOIN pedidos p ON p.pedidoID = l.pedidoID
+-- WHERE YEAR(p.fecha) = 1986 AND ((l.precio)<(a.precio*0.8));
+
+-- -- 5
+-- SELECT 
+--         c.nombre AS nombre_cliente,
+--         YEAR(p.fecha) AS año,
+--         COUNT(l.pedidoID)AS total_año
+--     FROM clientes c
+--     JOIN pedidos p ON c.clienteID = p.clienteID
+--     JOIN lineas l ON p.pedidoID = l.pedidoID
+--     GROUP BY c.clienteID, c.nombre, YEAR(p.fecha)
+
+-- 6   
+-- INSERT INTO pedidos(pedidoID,fecha,clienteID) VALUES (622,'2025-01-30',107);
+-- INSERT INTO lineas(articuloID,pedidoID,precio,cantidad) VALUES (1001,622,140.00,10),(1003,622,180.00,5);
+
+-- 7
+-- UPDATE clientes SET domicilio="Lazarraga, 35 bajo" WHERE nombre="Osasuna"
