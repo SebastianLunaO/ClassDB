@@ -12,7 +12,7 @@
             "name": "escuela",
             "database": "escuela",
             "username": "root",
-            "password": "Mausebas22",
+            "askForPassword": true,
             "connectionTimeout": 30
         },
         {
@@ -27,7 +27,21 @@
             "name": "kiroldenda",
             "database": "kiroldenda",
             "username": "root",
-            "password": "Mausebas22"
+            "askForPassword": true
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "gesinves",
+            "database": "Gesinves",
+            "username": "root",
+            "askForPassword": true
         }
     ]
 }
