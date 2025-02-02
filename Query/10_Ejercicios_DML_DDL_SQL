@@ -1,54 +1,54 @@
--- -- 1
--- WITH grouped_year AS (
--- SELECT  
---     EXTRACT(YEAR_MONTH FROM p.fecha) AS fecha,
---     SUM(l.cantidad*l.precio) AS suma
---     FROM articulos a
---     JOIN lineas l ON l.articuloID = a.articuloID
---     JOIN pedidos p ON p.pedidoID = l.pedidoID
---     JOIN categorias ct ON ct.categoriaID = a.categoriaID
---     GROUP BY fecha
---     HAVING YEAR(fecha) = 1986
---     ORDER BY fecha ASC)
+-- 1
+WITH grouped_year AS (
+SELECT  
+    EXTRACT(YEAR_MONTH FROM p.fecha) AS fecha,
+    SUM(l.cantidad*l.precio) AS suma
+    FROM articulos a
+    JOIN lineas l ON l.articuloID = a.articuloID
+    JOIN pedidos p ON p.pedidoID = l.pedidoID
+    JOIN categorias ct ON ct.categoriaID = a.categoriaID
+    GROUP BY fecha
+    HAVING YEAR(fecha) = 1986
+    ORDER BY fecha ASC)
 
--- SELECT CONCAT(SUBSTRING(fecha,1,4),"-",SUBSTRING(fecha,5,6)) AS fecha_mensual, SUM(suma)
--- FROM grouped_year
--- GROUP BY fecha;
+SELECT CONCAT(SUBSTRING(fecha,1,4),"-",SUBSTRING(fecha,5,6)) AS fecha_mensual, SUM(suma)
+FROM grouped_year
+GROUP BY fecha;
 
--- -- 2
--- SELECT  
---     p.fecha AS fecha,
---     SUM(l.cantidad*l.precio) AS suma
---     FROM articulos a
---     JOIN lineas l ON l.articuloID = a.articuloID
---     JOIN pedidos p ON p.pedidoID = l.pedidoID
---     JOIN categorias ct ON ct.categoriaID = a.categoriaID
---     GROUP BY fecha
---     HAVING YEAR(fecha) = 1987
---     ORDER BY suma DESC 
---     LIMIT 3;
+-- 2
+SELECT  
+    p.fecha AS fecha,
+    SUM(l.cantidad*l.precio) AS suma
+    FROM articulos a
+    JOIN lineas l ON l.articuloID = a.articuloID
+    JOIN pedidos p ON p.pedidoID = l.pedidoID
+    JOIN categorias ct ON ct.categoriaID = a.categoriaID
+    GROUP BY fecha
+    HAVING YEAR(fecha) = 1987
+    ORDER BY suma DESC 
+    LIMIT 3;
 
--- -- 3
--- SELECT articuloID,descripcion,((stock_medio - stock)) cantidad_pedir
--- FROM articulos
--- WHERE stock < stock_min;
+-- 3
+SELECT articuloID,descripcion,((stock_medio - stock)) cantidad_pedir
+FROM articulos
+WHERE stock < stock_min;
 
--- -- 4
--- SELECT a.articuloID,l.pedidoID,p.fecha, l.precio, a.precio*0.8, a.precio
--- FROM articulos a
--- JOIN lineas l ON l.articuloID = a.articuloID
--- JOIN pedidos p ON p.pedidoID = l.pedidoID
--- WHERE YEAR(p.fecha) = 1986 AND ((l.precio)<(a.precio*0.8));
+-- 4
+SELECT a.articuloID,l.pedidoID,p.fecha, l.precio, a.precio*0.8, a.precio
+FROM articulos a
+JOIN lineas l ON l.articuloID = a.articuloID
+JOIN pedidos p ON p.pedidoID = l.pedidoID
+WHERE YEAR(p.fecha) = 1986 AND ((l.precio)<(a.precio*0.8));
 
--- -- 5
--- SELECT 
---         c.nombre AS nombre_cliente,
---         YEAR(p.fecha) AS año,
---         COUNT(l.pedidoID)AS total_año
---     FROM clientes c
---     JOIN pedidos p ON c.clienteID = p.clienteID
---     JOIN lineas l ON p.pedidoID = l.pedidoID
---     GROUP BY c.clienteID, c.nombre, YEAR(p.fecha)
+-- 5
+SELECT 
+        c.nombre AS nombre_cliente,
+        YEAR(p.fecha) AS año,
+        COUNT(l.pedidoID)AS total_año
+    FROM clientes c
+    JOIN pedidos p ON c.clienteID = p.clienteID
+    JOIN lineas l ON p.pedidoID = l.pedidoID
+    GROUP BY c.clienteID, c.nombre, YEAR(p.fecha)
 
 -- 6   
 -- INSERT INTO pedidos(pedidoID,fecha,clienteID) VALUES (622,'2025-01-30',107);
@@ -56,3 +56,98 @@
 
 -- 7
 -- UPDATE clientes SET domicilio="Lazarraga, 35 bajo" WHERE nombre="Osasuna"
+
+-- 8
+-- INSERT INTO categorias(categoriaID,nombre) VALUES ("DL","Articulo Eliminado");
+-- INSERT INTO articulos(articuloID,descripcion,precio,categoriaID) VALUES (1,"Articulo eliminado",0.00,"DL");
+-- UPDATE lineas SET articuloID = 1 WHERE articuloID = 1001;
+-- DELETE FROM articulos WHERE descripcion = 'Zapatillas Nike';
+
+-- 9
+-- ALTER TABLE clientes ADD nacionalidad VARCHAR(40);
+-- UPDATE clientes SET nacionalidad= 'Euskadi';
+
+-- 10
+SELECT a.articuloID, a.descripcion
+FROM articulos a 
+JOIN lineas l ON l.articuloID = a.articuloID
+WHERE l.articuloID NOT IN 
+(
+SELECT l.articuloID
+FROM articulos a 
+JOIN lineas l ON l.articuloID = a.articuloID
+JOIN pedidos p ON p.pedidoID = l.pedidoID
+WHERE YEAR (p.fecha) = '1986');
+
+-- 11 
+SELECT c.nombre
+FROM clientes c
+JOIN pedidos p ON p.clienteID = c.clienteID
+WHERE c.clienteID NOT IN
+(
+SELECT c.clienteID
+FROM clientes c
+JOIN pedidos p ON p.clienteID = c.clienteID
+WHERE YEAR(fecha) >= 2022);
+
+-- 12
+
+WITH grouped_1986 AS (
+SELECT 
+c.nombre As cliente1986,
+c.clienteID AS clienteID1986,
+SUM(l.precio*l.cantidad) AS suma1986,
+p.fecha AS fecha1986
+FROM clientes c
+JOIN pedidos p ON p.clienteID = c.clienteID
+JOIN lineas l ON l.pedidoID = p.pedidoID
+GROUP BY l.pedidoID
+HAVING YEAR(p.fecha) = 1986),
+
+grouped_1987 AS (
+SELECT 
+c.nombre As clienteN,
+c.clienteID AS clienteID,
+SUM(l.precio*l.cantidad) AS suma,
+p.fecha AS fecha
+FROM clientes c
+JOIN pedidos p ON p.clienteID = c.clienteID
+JOIN lineas l ON l.pedidoID = p.pedidoID
+GROUP BY l.pedidoID
+HAVING YEAR(p.fecha) = 1987)
+
+SELECT gp7.clienteN,gp7.clienteID,gp7.suma AS suma_1987, gp6.suma1986 AS suma_1986
+FROM grouped_1987 gp7
+JOIN grouped_1986 gp6 ON gp6.clienteID1986 = gp7.clienteID
+WHERE gp6.suma1986 < gp7.suma;
+
+-- 13
+WITH grouped_1986 AS (
+SELECT 
+c.nombre As cliente1986,
+c.clienteID AS clienteID1986,
+SUM(l.precio*l.cantidad) AS suma1986,
+p.fecha AS fecha1986
+FROM clientes c
+JOIN pedidos p ON p.clienteID = c.clienteID
+JOIN lineas l ON l.pedidoID = p.pedidoID
+GROUP BY l.pedidoID
+HAVING YEAR(p.fecha) = 1986),
+
+grouped_1987 AS (
+SELECT 
+c.nombre As clienteN,
+c.clienteID AS clienteID,
+SUM(l.precio*l.cantidad) AS suma,
+p.fecha AS fecha
+FROM clientes c
+JOIN pedidos p ON p.clienteID = c.clienteID
+JOIN lineas l ON l.pedidoID = p.pedidoID
+GROUP BY l.pedidoID
+HAVING YEAR(p.fecha) = 1987)
+
+SELECT gp7.clienteN,gp7.clienteID,gp7.suma AS suma_1987, gp6.suma1986 AS suma_1986
+FROM grouped_1987 gp7
+LEFT JOIN grouped_1986 gp6 ON gp6.clienteID1986 = gp7.clienteID
+WHERE gp6.suma1986 < gp7.suma OR gp6.suma1986 IS NULL;
+
