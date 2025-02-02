@@ -1,7 +1,4 @@
-DROP DATABASE IF EXISTS GesInves;
-CREATE DATABASE GesInves;
-USE GesInves;
-
+DROP Table Clientes;
 Create Table Clientes(
 IDCliente        tinyint UNSIGNED  PRIMARY KEY,
 Nombre           varchar(25) not null,
@@ -16,6 +13,7 @@ Insert into Clientes Values(5,'BBVA','B');
 Insert into Clientes Values(6,'BSCH','B');
 Insert into Clientes Values(7,'Pates Zubia','C');
 
+DROP TABLE Comerciales;
 Create Table Comerciales(
 IDComercial      char(1)     PRIMARY KEY,
 Nombre	         varchar(25) not null
@@ -26,7 +24,6 @@ insert into Comerciales Values('B','Irune Agerre');
 insert into Comerciales Values('C','Ane Inza Aiastui');
 insert into Comerciales Values('D','Gorka Zubia');
 
--------------------------------------------------------------
 
 Create Table ClientesB(
 IDCliente        tinyint UNSIGNED  PRIMARY KEY,
