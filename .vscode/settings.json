@@ -56,6 +56,20 @@
             "database": "mysql",
             "username": "root",
             "askForPassword": true
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "motores",
+            "database": "motores",
+            "username": "root",
+            "askForPassword": true
         }
     ]
 }
