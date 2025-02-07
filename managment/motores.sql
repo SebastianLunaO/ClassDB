@@ -27,3 +27,7 @@
 -- CREATE INDEX idx_nombre ON empleados(nombre); 
 
 -- SELECT * FROM empleados USE INDEX (idx_nombre) WHERE nombre = 'Urcelai, Pedro';
+
+CREATE INDEX idx_empleadoID ON empleados(empleadoID);
+
+SELECT * FROM empleados USE INDEX (idx_empleadoID) WHERE nombre = 7499;
